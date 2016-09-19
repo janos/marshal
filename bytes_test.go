@@ -24,6 +24,8 @@ func TestBytesMarshalJSON(t *testing.T) {
 		{Bytes(1024 * 1024 * 1024 * 1024), []byte(`"1.0TB"`)},
 		{Bytes(1024 * 1024 * 1024 * 1024 * 1024), []byte(`"1.0PB"`)},
 		{Bytes(1024 * 1024 * 1024 * 1024 * 1024 * 1024), []byte(`"1.0EB"`)},
+		{Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024)), []byte(`"1.0ZB"`)},
+		{Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024)), []byte(`"1.0YB"`)},
 		{Bytes(12 * 1024), []byte(`"12kB"`)},
 		{Bytes(99 * 1024), []byte(`"99kB"`)},
 		{Bytes(250 * 1024), []byte(`"250kB"`)},
@@ -54,6 +56,8 @@ func TestBytesMarshalText(t *testing.T) {
 		{Bytes(1024 * 1024 * 1024 * 1024), []byte(`1.0TB`)},
 		{Bytes(1024 * 1024 * 1024 * 1024 * 1024), []byte(`1.0PB`)},
 		{Bytes(1024 * 1024 * 1024 * 1024 * 1024 * 1024), []byte(`1.0EB`)},
+		{Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024)), []byte(`1.0ZB`)},
+		{Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024)), []byte(`1.0YB`)},
 		{Bytes(12 * 1024), []byte(`12kB`)},
 		{Bytes(99 * 1024), []byte(`99kB`)},
 		{Bytes(250 * 1024), []byte(`250kB`)},
@@ -84,6 +88,8 @@ func TestBytesUnmarshalJSON(t *testing.T) {
 		{[]byte(`"1.0TB"`), Bytes(1024 * 1024 * 1024 * 1024)},
 		{[]byte(`"1.0PB"`), Bytes(1024 * 1024 * 1024 * 1024 * 1024)},
 		{[]byte(`"1.0EB"`), Bytes(1024 * 1024 * 1024 * 1024 * 1024 * 1024)},
+		{[]byte(`"1.0ZB"`), Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024))},
+		{[]byte(`"1.0YB"`), Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024))},
 		{[]byte(`"12kB"`), Bytes(12 * 1024)},
 		{[]byte(`"99kB"`), Bytes(99 * 1024)},
 		{[]byte(`"250kB"`), Bytes(250 * 1024)},
@@ -115,6 +121,8 @@ func TestBytesUnmarshalText(t *testing.T) {
 		{[]byte(`1.0TB`), Bytes(1024 * 1024 * 1024 * 1024)},
 		{[]byte(`1.0PB`), Bytes(1024 * 1024 * 1024 * 1024 * 1024)},
 		{[]byte(`1.0EB`), Bytes(1024 * 1024 * 1024 * 1024 * 1024 * 1024)},
+		{[]byte(`1.0ZB`), Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024))},
+		{[]byte(`1.0YB`), Bytes(float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024) * float64(1024))},
 		{[]byte(`12kB`), Bytes(12 * 1024)},
 		{[]byte(`99kB`), Bytes(99 * 1024)},
 		{[]byte(`250kB`), Bytes(250 * 1024)},
@@ -136,7 +144,7 @@ func TestBytesUnmarshalText(t *testing.T) {
 func TestBytesBytes(t *testing.T) {
 	tests := []struct {
 		bytes Bytes
-		want  uint64
+		want  float64
 	}{
 		{Bytes(1), 1},
 		{Bytes(1024), 1024},
@@ -144,7 +152,7 @@ func TestBytesBytes(t *testing.T) {
 
 	for _, test := range tests {
 		if response := test.bytes.Bytes(); response != test.want {
-			t.Errorf("%q: got %q, want %q", test.bytes, response, test.want)
+			t.Errorf("%v: got %v, want %v", test.bytes, response, test.want)
 		}
 	}
 }

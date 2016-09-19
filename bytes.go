@@ -13,17 +13,21 @@ import (
 	"unicode"
 )
 
+type byteSize float64
+
 const (
-	aByte = 1 << (iota * 10)
+	aByte byteSize = 1 << (iota * 10)
 	kiloByte
 	megaByte
 	gigaByte
 	teraByte
 	petaByte
 	exaByte
+	zettaByte
+	yottaByte
 )
 
-var byteSizes = map[string]uint64{
+var byteSizes = map[string]byteSize{
 	"b":  aByte,
 	"kb": kiloByte,
 	"mb": megaByte,
@@ -31,12 +35,14 @@ var byteSizes = map[string]uint64{
 	"tb": teraByte,
 	"pb": petaByte,
 	"eb": exaByte,
+	"zb": zettaByte,
+	"yb": yottaByte,
 }
 
-var byteSuffixes = []string{"B", "kB", "MB", "GB", "TB", "PB", "EB"}
+var byteSuffixes = []string{"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"}
 
 // Bytes is a helper type that represents length of data in bytes.
-type Bytes uint64
+type Bytes float64
 
 // MarshalJSON implements json.Marshaler interface.
 // It marshals a string representation of length of bytes.
@@ -59,7 +65,7 @@ func (b *Bytes) UnmarshalJSON(data []byte) error {
 func (b Bytes) MarshalText() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	if b < 10 {
-		_, err := fmt.Fprintf(buf, "%dB", b)
+		_, err := fmt.Fprintf(buf, "%dB", int(b))
 		return buf.Bytes(), err
 	}
 	e := math.Floor(math.Log(float64(b)) / math.Log(1024))
@@ -93,7 +99,7 @@ func (b *Bytes) UnmarshalText(data []byte) error {
 	extra := bytes.ToLower(bytes.TrimSpace(data[lastDigit:]))
 	if m, ok := byteSizes[string(extra)]; ok {
 		f *= float64(m)
-		if f >= math.MaxUint64 {
+		if f >= math.MaxFloat64 {
 			return fmt.Errorf("too large: %s", data)
 		}
 		*b = Bytes(f)
@@ -104,6 +110,6 @@ func (b *Bytes) UnmarshalText(data []byte) error {
 }
 
 // Bytes returns an integer value of length of bytes.
-func (b Bytes) Bytes() uint64 {
-	return uint64(b)
+func (b Bytes) Bytes() float64 {
+	return float64(b)
 }
