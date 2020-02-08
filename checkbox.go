@@ -20,7 +20,7 @@ type Checkbox bool
 //  - "on" if it is checked
 //  - false if it is not checked
 func (c Checkbox) MarshalJSON() ([]byte, error) {
-	if c == true {
+	if c {
 		return checkboxTrue, nil
 	}
 	return checkboxFalse, nil
